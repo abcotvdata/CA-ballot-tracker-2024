@@ -1,1 +1,1 @@
-# CA-ballot-tracker-2022
+# CA-ballot-tracker-2024
