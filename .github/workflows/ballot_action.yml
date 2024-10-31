@@ -3,7 +3,7 @@ on:
      - cron: '30 21,23 * * 1-5'
     workflow_dispatch:
 
-name: Ballot Tracker 2022
+name: Ballot Tracker 2024
   
 jobs:
   render:
