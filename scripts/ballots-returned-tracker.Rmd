@@ -163,13 +163,8 @@ download.file("https://elections.cdn.sos.ca.gov/statewide-elections/2024-general
 
 ballots <- read_excel(filename) #read file
 
-row_with_names <- as.numeric(which(grepl("COUNTY", ballots$`45594.074317129627`))) #which row has the actual column names
-
-names(ballots) <- ballots[row_with_names,] #fill in the column names with the actual columnn names from that row
-ballots <- ballots[-row_with_names,] #drop that same row
-
-ballots <- ballots[-1,]
-ballots <- ballots[-1,]
+ballots <- ballots %>% 
+    row_to_names(row_number = 3)
 
 ```
 
