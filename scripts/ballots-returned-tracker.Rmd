@@ -154,26 +154,31 @@ today_UTC <- as.POSIXct(Sys.time()) #get todays date as UTC
 today_posix <- format(today_UTC, tz="America/Los_Angeles",usetz=TRUE)
 today <- as.Date(substr(as.character(today_posix), 1,10))
 yesterday <- as.Date(today-1) #get yesterday's date
-filename <- paste(sep="", "vbm-statistics_",yesterday,".xlsm") #put yesterdays date into filename
+filename <- paste(sep="", "vbm-statistics_",yesterday,".xls") #put yesterdays date into filename
 
 #pretty dates
 today_display <- format(today, "%A, %b. %d, %Y")
 
-download.file("https://elections.cdn.sos.ca.gov/statewide-elections/2022-general/vbm-statistics.xlsm", filename) #download file
+download.file("https://elections.cdn.sos.ca.gov/statewide-elections/2024-general/vbm-statistics.xls", filename) #download file
 
 ballots <- read_excel(filename) #read file
 
-row_with_names <- as.numeric(which(grepl("COUNTY", ballots$...1))) #which row has the actual column names
+row_with_names <- as.numeric(which(grepl("COUNTY", ballots$`45594.074317129627`))) #which row has the actual column names
 
 names(ballots) <- ballots[row_with_names,] #fill in the column names with the actual columnn names from that row
 ballots <- ballots[-row_with_names,] #drop that same row
+
+ballots <- ballots[-1,]
+ballots <- ballots[-1,]
 
 ```
 
 ```{r, echo=FALSE, warning=FALSE}
 
+#colnames(ballots)
+
 ballots_clean <- ballots %>% 
-  select(`COUNTY`, `Total voters Issued VBM ballots`,`Total Accepted VBM ballots`, `Drop Box`, `Drop Off Location`, `Vote Center Drop Off`, `Mail`, `FAX`, `Other`) %>%  #select only the columns we need
+  select(`COUNTY`, `Total voters Issued VBM ballots`,`Total Accepted VBM ballots`, `Drop Box`, `Drop Off Location`, `Vote Center Drop Off`, `Mail`, `FAX`, `Other`, `Regular Ballots`, `Provisional Ballots  \n(Non-CVR)`, `Conditional (CVR)`, `Conditional (\"Instant\" CVR )`, `Total Accepted`, `TOTAL BALLOTS CAST`) %>%  #select only the columns we need
   filter(`COUNTY` %in% counties) %>%  #filter out only the rows that have county names
   replace(is.na(.), "0") %>%  #replace everything that's "NULL" with a "0" 
   mutate(`Total voters Issued VBM ballots`= as.numeric(`Total voters Issued VBM ballots`),
@@ -183,13 +188,22 @@ ballots_clean <- ballots %>%
          `Vote Center Drop Off` = as.numeric(`Vote Center Drop Off`), 
          `Mail`= as.numeric(`Mail`), 
          `FAX` = as.numeric(`FAX`), 
-         `Other` = as.numeric(`Other`)) %>% #convert them all to numbers
-  rename(`Ballots issued`=`Total voters Issued VBM ballots`,
-         `Ballots accepted`=`Total Accepted VBM ballots`,
-         County = `COUNTY`) %>% 
-  mutate(`Ballots returned` = `Drop Box` + `Drop Off Location` + `Vote Center Drop Off` + `Mail` + `FAX` + `Other`) %>% #get a number for the total ballots returned
-  mutate(`% returned` = round(((`Ballots returned`/`Ballots issued`)*100), digits=2)) %>%  #percent that have been returned
-  mutate(`% accepted` = round(((`Ballots accepted`/`Ballots issued`)*100), digits=2))
+         `Other` = as.numeric(`Other`),
+         `Regular Ballots` = as.numeric(`Regular Ballots`),
+         `Provisional Ballots  \n(Non-CVR)` = as.numeric(`Provisional Ballots  \n(Non-CVR)`),
+         `Conditional (CVR)` = as.numeric(`Conditional (CVR)`),
+         `Conditional (\"Instant\" CVR )` = as.numeric(`Conditional (\"Instant\" CVR )`),
+         `Total Accepted` = as.numeric(`Total Accepted`),
+         `TOTAL BALLOTS CAST` = as.numeric(`TOTAL BALLOTS CAST`)) %>% #convert them all to numbers
+  rename(`VBM Ballots issued`=`Total voters Issued VBM ballots`,
+         `VBM Ballots accepted`=`Total Accepted VBM ballots`,
+         County = `COUNTY`,
+         `In Person Ballots accepted` =  `Total Accepted`) %>% 
+  mutate(`VBM ballots returned` = `Drop Box` + `Drop Off Location` + `Vote Center Drop Off` + `Mail` + `FAX` + `Other`) %>% #get a number for the total VBM ballots returned
+  mutate(`In person ballots returned` = `Regular Ballots` + `Provisional Ballots  \n(Non-CVR)` + `Conditional (CVR)` + `Conditional (\"Instant\" CVR )`) %>% #get number for total in person ballots returned 
+  mutate(`VBM and In Person Ballots Returned` = `VBM ballots returned` + `In person ballots returned`) %>%  #get total number of ballots returned for both VBM and in person
+  mutate(`% VBM returned` = round(((`VBM ballots returned`/`VBM Ballots issued`)*100), digits=2)) %>%  #percent that have been returned
+  mutate(`% VBM accepted` = round(((`VBM Ballots accepted`/`VBM Ballots issued`)*100), digits=2))
 
 write.csv(ballots_clean, "ballots_clean.csv", row.names = FALSE)
 
@@ -197,9 +211,9 @@ write.csv(ballots_clean, "ballots_clean.csv", row.names = FALSE)
 
 ```{r, echo=FALSE, warning=FALSE}
 
-total_ballots_issued = sum(ballots_clean$`Ballots issued`)
-total_ballots_returned = sum(ballots_clean$`Ballots returned`)
-total_ballots_accepted = sum(ballots_clean$`Ballots accepted`)
+total_ballots_issued = sum(ballots_clean$`VBM Ballots issued`)
+total_ballots_returned = sum(ballots_clean$`VBM ballots returned`)
+total_ballots_accepted = sum(ballots_clean$`VBM Ballots accepted`)
 total_pct_returned = round(((total_ballots_returned/total_ballots_issued)*100), digits=1)
 total_pct_accepted = round(((total_ballots_accepted/total_ballots_issued)*100), digits=1)
 
