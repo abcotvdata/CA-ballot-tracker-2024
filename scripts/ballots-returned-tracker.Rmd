@@ -199,8 +199,9 @@ ballots_clean <- ballots %>%
   mutate(`VBM and In Person Ballots Returned` = `VBM ballots returned` + `In person ballots returned`) %>%  #get total number of ballots returned for both VBM and in person
   mutate(`% VBM returned` = round(((`VBM ballots returned`/`VBM Ballots issued`)*100), digits=2)) %>%  #percent VBM that have been returned
   mutate(`% VBM accepted` = round(((`VBM Ballots accepted`/`VBM Ballots issued`)*100), digits=2)) %>% #percent VBM that have been accepted
-mutate(`% in person accepted` = round(((`In Person Ballots accepted`/`In person ballots returned`)*100), digits=2)) %>%  #percent in person that have been accepted
-  mutate(`% in person accepted` = replace_na(`% in person accepted`, 0))
+#mutate(`% in person accepted` = round(((`In Person Ballots accepted`/`In person ballots returned`)*100), digits=2)) %>%  #percent in person that have been accepted
+  mutate(`% total accepted` = round((((`In Person Ballots accepted` + `VBM Ballots accepted`)/(`In person ballots returned` + `VBM Ballots issued`))*100), digits=2))  #percent of total that have been accepted
+  #mutate(`% in person accepted` = replace_na(`% in person accepted`, 0))
 
 write.csv(ballots_clean, "ballots_clean.csv", row.names = FALSE)
 
