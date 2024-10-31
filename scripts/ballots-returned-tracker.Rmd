@@ -269,18 +269,18 @@ if (total_ballots_accepted > 1000000) {
 <br>
 
 
-<iframe title="Ballots returned and accepted by county" aria-label="Map" id="datawrapper-chart-8PQ2q" src="https://datawrapper.dwcdn.net/8PQ2q/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="711" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
+<iframe title="Ballots returned and accepted by county" aria-label="Map" id="datawrapper-chart-8PQ2q" src="https://datawrapper.dwcdn.net/Y57wT/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="711" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
 </script>
 
 <br>
 <br>
 
-<iframe title="Search for your county" aria-label="Dot Plot" id="datawrapper-chart-ycOwi" src="https://datawrapper.dwcdn.net/ycOwi/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="525" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
+<iframe title="Search for your county" aria-label="Dot Plot" id="datawrapper-chart-ycOwi" src="https://datawrapper.dwcdn.net/o6oyq/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="525" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
 </script>
 
 <br>
 <br>
-<div class="footer">Built and designed by Grace Manthey and Lindsey Feingold. Source: <a href="https://www.sos.ca.gov/elections/upcoming-elections/general-election-nov-8-2022" target="_blank">California Secretary of State</a>. Data usually lags by about a day.</div>
+<div class="footer">Built and designed by Lindsey Feingold and Jill Castellano. Source: <a href="https://www.sos.ca.gov/elections/upcoming-elections/general-election-nov-8-2022" target="_blank">California Secretary of State</a>. Data usually lags by about a day.</div>
 
 
 ```{r, echo=FALSE, warning=FALSE}
