@@ -280,7 +280,7 @@ if (total_ballots_accepted > 1000000) {
 
 <br>
 <br>
-<div class="footer">Built and designed by Lindsey Feingold and Jill Castellano. Source: <a href="https://www.sos.ca.gov/elections/upcoming-elections/general-election-nov-8-2022" target="_blank">California Secretary of State</a>. Data usually lags by about a day.</div>
+<div class="footer">Built and designed by Lindsey Feingold and Jill Castellano. Source: <a href="https://www.sos.ca.gov/elections/upcoming-elections/general-election-nov-5-2024" target="_blank">California Secretary of State</a>. Data usually lags by about a day.</div>
 
 
 ```{r, echo=FALSE, warning=FALSE}
