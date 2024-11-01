@@ -219,12 +219,12 @@ write.csv(ballots_clean1, "ballots_clean.csv", row.names = FALSE)
 
 ```{r, echo=FALSE, warning=FALSE}
 
-vbm_ballots_issued = sum(ballots_clean$`VBM Ballots issued`)
-vbm_ballots_returned = sum(ballots_clean$`VBM ballots returned`)
-vbm_ballots_accepted = sum(ballots_clean$`VBM Ballots accepted`)
+vbm_ballots_issued = sum(ballots_clean1$`VBM Ballots issued`)
+vbm_ballots_returned = sum(ballots_clean1$`VBM ballots returned`)
+vbm_ballots_accepted = sum(ballots_clean1$`VBM Ballots accepted`)
 #total_pct_returned = round(((total_ballots_returned/total_ballots_issued)*100), digits=1)
-person_ballots_accepted = sum(ballots_clean$`In Person Ballots accepted`)
-total_accepted = sum(ballots_clean$`VBM and In Person Ballots Accepted`)
+person_ballots_accepted = sum(ballots_clean1$`In Person Ballots accepted`)
+total_accepted = sum(ballots_clean1$`VBM and In Person Ballots Accepted`)
 total_pct_accepted = round(((total_accepted/22595659)*100), digits=1)
 
 
