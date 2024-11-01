@@ -84,7 +84,7 @@ h4 {
    .card {
       color: white;
       float: left;
-      width: calc(20% - 10px);
+      width: calc(25% - 10px);
       padding: 5px;
       border-radius: 10px;
       margin-left: 3px;
@@ -166,6 +166,11 @@ ballots <- read_excel(filename) #read file
 ballots <- ballots %>% 
     row_to_names(row_number = 3)
 
+registration <- read.xlsx("county_registration.xlsx")
+
+registration1 <- registration %>% 
+  select(County, Total.Registered)
+
 ```
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -197,41 +202,54 @@ ballots_clean <- ballots %>%
   mutate(`VBM ballots returned` = `Drop Box` + `Drop Off Location` + `Vote Center Drop Off` + `Mail` + `FAX` + `Other`) %>% #get a number for the total VBM ballots returned
   mutate(`In person ballots returned` = `Regular Ballots` + `Provisional Ballots  \n(Non-CVR)` + `Conditional (CVR)` + `Conditional (\"Instant\" CVR )`) %>% #get number for total in person ballots returned 
   mutate(`VBM and In Person Ballots Returned` = `VBM ballots returned` + `In person ballots returned`) %>%  #get total number of ballots returned for both VBM and in person
+  mutate(`VBM and In Person Ballots Accepted` = `VBM Ballots accepted` + `In Person Ballots accepted`) %>%  #get total number of ballots accepted for both VBM and in person
   mutate(`% VBM returned` = round(((`VBM ballots returned`/`VBM Ballots issued`)*100), digits=2)) %>%  #percent VBM that have been returned
   mutate(`% VBM accepted` = round(((`VBM Ballots accepted`/`VBM Ballots issued`)*100), digits=2)) %>% #percent VBM that have been accepted
 #mutate(`% in person accepted` = round(((`In Person Ballots accepted`/`In person ballots returned`)*100), digits=2)) %>%  #percent in person that have been accepted
   mutate(`% total accepted` = round((((`In Person Ballots accepted` + `VBM Ballots accepted`)/(`In person ballots returned` + `VBM Ballots issued`))*100), digits=2))  #percent of total that have been accepted
   #mutate(`% in person accepted` = replace_na(`% in person accepted`, 0))
 
-write.csv(ballots_clean, "ballots_clean.csv", row.names = FALSE)
+ballots_clean1 <- left_join(ballots_clean, registration1 , by = c("County" = "County")) %>% 
+  rename(`Total Registered`=`Total.Registered`) %>% 
+  mutate(`% voted` = round((((`In Person Ballots accepted` + `VBM Ballots accepted`)/(`Total Registered`))*100), digits=2))
+
+write.csv(ballots_clean1, "ballots_clean.csv", row.names = FALSE)
 
 ```
 
 ```{r, echo=FALSE, warning=FALSE}
 
-total_ballots_issued = sum(ballots_clean$`VBM Ballots issued`)
-total_ballots_returned = sum(ballots_clean$`VBM ballots returned`)
-total_ballots_accepted = sum(ballots_clean$`VBM Ballots accepted`)
-total_pct_returned = round(((total_ballots_returned/total_ballots_issued)*100), digits=1)
-total_pct_accepted = round(((total_ballots_accepted/total_ballots_issued)*100), digits=1)
+vbm_ballots_issued = sum(ballots_clean$`VBM Ballots issued`)
+vbm_ballots_returned = sum(ballots_clean$`VBM ballots returned`)
+vbm_ballots_accepted = sum(ballots_clean$`VBM Ballots accepted`)
+#total_pct_returned = round(((total_ballots_returned/total_ballots_issued)*100), digits=1)
+person_ballots_accepted = sum(ballots_clean$`In Person Ballots accepted`)
+total_accepted = sum(ballots_clean$`VBM and In Person Ballots Accepted`)
+total_pct_accepted = round(((total_accepted/22595659)*100), digits=1)
 
-if (total_ballots_issued > 1000000) {
-  total_ballots_issued_display = paste(sep="", as.character(round((total_ballots_issued/1000000), digits=1)), " M")
+
+if (vbm_ballots_issued > 1000000) {
+  vbm_ballots_issued_display = paste(sep="", as.character(round((vbm_ballots_issued/1000000), digits=1)), " M")
 } else {
-  total_ballots_issued_display = paste(sep="", as.character(round((total_ballots_issued/1000), digits=1)), " K")
+  vbm_ballots_issued_display = paste(sep="", as.character(round((vbm_ballots_issued/1000), digits=1)), " K")
 }
 
+#if (vbm_ballots_returned > 1000000) {
+#  vbm_ballots_returned_display = paste(sep="", as.character(round((vbm_ballots_returned/1000000), digits=1)), " M")
+#} else {
+#  vbm_ballots_returned_display = paste(sep="", as.character(round((vbm_ballots_returned/1000), digits=1)), " K")
+#}
 
-if (total_ballots_returned > 1000000) {
-  total_ballots_returned_display = paste(sep="", as.character(round((total_ballots_returned/1000000), digits=1)), " M")
+if (vbm_ballots_accepted > 1000000) {
+  vbm_ballots_accepted_display = paste(sep="", as.character(round((vbm_ballots_accepted/1000000), digits=1)), " M")
 } else {
-  total_ballots_returned_display = paste(sep="", as.character(round((total_ballots_returned/1000), digits=1)), " K")
+  vbm_ballots_accepted_display = paste(sep="", as.character(round((vbm_ballots_accepted/1000), digits=1)), " K")
 }
 
-if (total_ballots_accepted > 1000000) {
-  total_ballots_accepted_display = paste(sep="", as.character(round((total_ballots_accepted/1000000), digits=1)), " M")
+if (person_ballots_accepted > 1000000) {
+  person_ballots_accepted_display = paste(sep="", as.character(round((person_ballots_accepted/1000000), digits=1)), " M")
 } else {
-  total_ballots_accepted_display = paste(sep="", as.character(round((total_ballots_accepted/1000), digits=1)), " K")
+  person_ballots_accepted_display = paste(sep="", as.character(round((person_ballots_accepted/1000), digits=1)), " K")
 }
 
 
@@ -242,23 +260,19 @@ if (total_ballots_accepted > 1000000) {
 
 <div class="cardContainer">
 <div class="card" style="background-color:#00318b;">
-<p>Ballots issued<br>
-<span class="bignumber">`r total_ballots_issued_display`<br></span>
+<p>Vote-by-mail Ballots Issued<br>
+<span class="bignumber">`r vbm_ballots_issued_display`<br></span>
 </div>
 <div class="card" style="background-color:#00318b;">
-<p>Ballots returned<br>
-<span class="bignumber">`r total_ballots_returned_display`<br></span>
+<p>Vote-by-mail Ballots Accepted<br>
+<span class="bignumber">`r vbm_ballots_accepted_display`<br></span>
 </div>
 <div class="card" style="background-color:#00318b;">
-<p>Ballots accepted<br>
-<span class="bignumber">`r total_ballots_accepted_display`<br></span>
+<p>In-person Ballots Accepted<br>
+<span class="bignumber">`r person_ballots_accepted_display`<br></span>
 </div>
 <div class="card" style="background-color:#00318b;">
-<p>% returned<br>
-<span class="bignumber">`r total_pct_returned`%<br></span><p>
-</div>
-<div class="card" style="background-color:#00318b;">
-<p>% accepted<br>
+<p>Percent Voted<br>
 <span class="bignumber">`r total_pct_accepted`%<br></span><p>
 </div>
 </div>
@@ -266,12 +280,25 @@ if (total_ballots_accepted > 1000000) {
 <br>
 <br>
 
+<b>How many people have already voted?</b>
+
+Mail-in and in-person voting is underway in California for the Nov. 5, 2024, General Election, and the number of ballots cast is climbing each day. Click on or hover over each county to see the percent of registered voters who have already voted as of `r today_display`.
+
+<br><br>
 
 <iframe title="Ballots returned and accepted by county" aria-label="Map" id="datawrapper-chart-8PQ2q" src="https://datawrapper.dwcdn.net/Y57wT/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="711" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
 </script>
 
 <br>
 <br>
+
+<b>Understanding the data</b>
+
+The percent of people who have voted is calculated by adding together the number of people whose votes have been accepted — including people who have voted by mail and in person — and dividing that by the number of registered voters in each county. Accepted votes are votes that have been approved by county election offices and will be counted on or after election night. Some ballots returned to election offices have yet to be accepted, because they are still going through the verification process.
+
+Ballot returns data is published daily by the California Secretary of State’s office. Voter registration data comes from the 15-day out registration report published by the state office and is current as of Oct. 21, 2024.
+
+<br><br>
 
 <iframe title="Search for your county" aria-label="Dot Plot" id="datawrapper-chart-ycOwi" src="https://datawrapper.dwcdn.net/o6oyq/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="525" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
 </script>
