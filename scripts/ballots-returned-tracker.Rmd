@@ -282,7 +282,7 @@ if (person_ballots_accepted > 1000000) {
 
 <b>How many people have already voted?</b>
 
-Mail-in and in-person voting is underway in California for the Nov. 5, 2024 General Election, and the number of ballots cast is climbing each day. Click on or hover over each county to see the percent of registered voters who have already voted as of `r today_display`.
+Millions of Californians have cast ballots in the Nov. 5, 2024 General Election, and registrar's offices will still be processing all the ballots that are coming in for days. Click on or hover over each county to see the percent of registered voters who have voted in the election.
 
 <br><br>
 
